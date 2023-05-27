@@ -21,12 +21,10 @@ if [ -n "${IM}" ];then
 	IM_PROCESS=`ps -A | grep ${IM}`
 	if [ -n "${IM_PROCESS}" ];then
 		echo "${IM} is already running"
-		exit 1
 	else
 		echo "Running ${IM} with nohup"
 		nohup ${IM} >/dev/null 2>&1 &
-		exit 0
 	fi
 else
-	exit 1
+	echo "fcitx or fcitx5 is not exists"
 fi
