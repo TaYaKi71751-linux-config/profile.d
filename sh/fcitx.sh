@@ -1,30 +1,19 @@
 #!/bin/bash
 
-FCITX_ARR=( "fcitx" "fcitx5" )
-IM=""
-
-for FCITX in ${FCITX_ARR[@]};do
-	FCITX_PATH=`which ${FCITX}`
-	if [ -n "${FCITX_PATH}" ];then
-		IM="${FCITX}"
-		break
-	else
-		continue
-	fi
+FCITX=("fcitx" "fcitx5")
+for _fcitx_bin in "${FCITX[@]}";do
+        FCITX_BIN=`which ${_fcitx_bin}`
+        if [ "${FCITX_BIN}" != "" ];then
+                export GTK_IM_MODULE=${_fcitx_bin}
+                export QT_IM_MODULE=${_fcitx_bin}
+                export XMODIFIERS=@im=${_fcitx_bin}
+                FCITX_PROCESS=`ps -A | grep ${_fcitx_bin}`
+                if [ -n "${FCITX_PROCESS}" ];then
+                        echo "${IM} is already running"
+                else
+                        echo "Running ${IM} with nohup"
+                        nohup ${IM} >/dev/null 2>&1 &
+                fi
+                break
+        fi
 done
-
-if [ -n "${IM}" ];then
-	echo "Using ${IM} as Input Method"
-	export GTK_IM_MODULE=${IM}
-	export QT_IM_MODULE=${IM}
-	export XMODIFIERS=@im=${IM}
-	IM_PROCESS=`ps -A | grep ${IM}`
-	if [ -n "${IM_PROCESS}" ];then
-		echo "${IM} is already running"
-	else
-		echo "Running ${IM} with nohup"
-		nohup ${IM} >/dev/null 2>&1 &
-	fi
-else
-	echo "fcitx or fcitx5 is not exists"
-fi
