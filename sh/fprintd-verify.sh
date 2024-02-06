@@ -18,8 +18,7 @@ function fprint_verify(){
 		fi
 		if [ -z "$(printf "$FPRINT_VERIFY_NO_MATCH" | grep done)" ];then
 			echo 'verify-match'
-			loginctl unlock-sessions
-			exit
+			sudo loginctl unlock-sessions
 		fi
 	fi
 }
