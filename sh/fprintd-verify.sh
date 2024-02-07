@@ -6,6 +6,12 @@ else
 	exit -1
 fi
 
+if ( `which fprintd-verify` );then
+	echo 'fprintd-verify found'
+else
+	exit -1
+fi
+
 function fprint_verify(){
 	sudo pkill -9 fprintd-verify
 	export FPRINT_VERIFY_STATUS=$(sudo fprintd-verify | grep '(done)' | tr -d '\n' | tr -d '\r')
