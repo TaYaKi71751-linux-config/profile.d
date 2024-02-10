@@ -1,16 +1,30 @@
 #!/bin/bash
 
-if ( `sudo -nv` );then
-	echo 'use sudo'
-else
-	exit -1
-fi
+export SUDO_ERROR=""
+export FPRINTD_ERROR=""
 
-if ( `which fprintd-verify` );then
-	echo 'fprintd-verify found'
-else
-	exit -1
-fi
+function check_sudo(){
+	if ( `sudo -nv` );then
+		echo 'use sudo'
+		export SUDO_ERROR=""
+	else
+		export SUDO_ERROR="true"
+	fi
+}
+
+function check_fprintd(){
+	FPRINTD_WHICH=$(find / -name 'fprintd-verify' -type f -exec echo {} \;)
+	echo "${FPRINTD_WHICH}"
+	if [ -n "${FPRINTD_WHICH}" ];then
+		echo 'fprintd-verify found'
+		export FPRINTD_ERROR=""
+	else
+		export FPRINTD_ERROR="true"
+	fi
+}
+
+check_sudo
+check_fprintd
 
 function fprint_verify(){
 	sudo pkill -9 fprintd-verify
@@ -34,6 +48,14 @@ function fprint_verify(){
 		fi
 	fi
 }
-while [ true ];do
-	fprint_verify
-done &
+if [ -z "${SUDO_ERROR}" ];then
+	if [ -z "${FPRINTD_ERROR}" ];then
+		while ( true );do
+			fprint_verify
+		done &
+	else
+		echo fprint
+	fi
+else
+	echo sudo
+fi
