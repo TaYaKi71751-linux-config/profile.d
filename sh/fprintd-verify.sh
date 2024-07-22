@@ -27,7 +27,6 @@ check_sudo
 check_fprintd
 
 function fprint_verify(){
-	sudo pkill -9 fprintd-verify
 	export FPRINT_VERIFY_STATUS=$(sudo fprintd-verify | grep '(done)' | tr -d '\n' | tr -d '\r')
 	export FPRINT_VERIFY_ERROR=''
 	echo "${FPRINT_VERIFY_STATUS}"
