@@ -13,7 +13,7 @@ function check_sudo(){
 }
 
 function check_fprintd(){
-	FPRINTD_WHICH=$(find / -name 'fprintd-verify' -type f -exec echo {} \;)
+	FPRINTD_WHICH=$(find /usr/bin -name 'fprintd-verify' -type f -exec echo {} \;)
 	echo "${FPRINTD_WHICH}"
 	if [ -n "${FPRINTD_WHICH}" ];then
 		echo 'fprintd-verify found'
